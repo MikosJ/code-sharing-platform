@@ -20,8 +20,14 @@ repositories {
 
 sourceSets.main.resources.srcDirs = ["src/resources"]
 
+
 dependencies {
+    testImplementation 'com.github.hyperskill:hs-test:release-SNAPSHOT'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.projectlombok:lombok:1.18.24'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker:2.7.4'
+    runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
