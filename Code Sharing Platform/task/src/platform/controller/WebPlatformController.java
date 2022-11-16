@@ -10,6 +10,7 @@ import platform.Code;
 import platform.CodeService;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 @Controller
 public class WebPlatformController implements TemplateModel {
@@ -17,10 +18,13 @@ public class WebPlatformController implements TemplateModel {
     CodeService codeService;
 
     @GetMapping(value = "/code/{id}")
-    public ModelAndView getCodeById(HttpServletResponse response, @PathVariable Long id) {
+    public ModelAndView getCodeById(HttpServletResponse response, @PathVariable UUID id) {
         response.addHeader("Content-Type", "text/html");
         ModelAndView model = new ModelAndView("codeSingle");
         Code code = codeService.getCodeById(id);
+        code.updateRestriction();
+        codeService.saveCode(code);
+        codeService.deleteCodeRestriction();
         model.addObject("codeBody", code.getCode());
         model.addObject("date", code.getDate());
         return model;

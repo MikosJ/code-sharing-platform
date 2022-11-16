@@ -8,6 +8,7 @@ import platform.Code;
 import platform.CodeService;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -20,16 +21,28 @@ public class ApiPlatformController {
     @PostMapping("/code/new")
     public ResponseEntity<?> newCodeApi(@RequestBody Code code) {
         Code codeNew = new Code(code.getCode());
-        System.out.println(codeNew);
-        System.out.println("ASDDASADADSAADSSADASDADS");
+        if (code.getTimeRestriction() > 0) {
+            codeNew.setTimeRestricted(true);
+            codeNew.setTimeRestriction(code.getTimeRestriction());
+        }
+        if (code.getViewRestriction()>0) {
+            codeNew.setViewRestricted(true);
+            codeNew.setViewRestriction(code.getViewRestriction());
+        }
         codeService.saveCode(codeNew);
         System.out.println(codeNew);
         return new ResponseEntity<>(Map.of("id", String.valueOf(codeNew.getId())), HttpStatus.OK);
     }
+
     @GetMapping(value = "/code/{id}")
-    public ResponseEntity<?> getCodeByIdApi(@PathVariable Long id) {
+    public ResponseEntity<?> getCodeByIdApi(@PathVariable UUID id) {
+        Code codeNew = codeService.getCodeById(id);
+        codeNew.updateRestriction();
+        codeService.saveCode(codeNew);
+        codeService.deleteCodeRestriction();
         return new ResponseEntity<>(codeService.getCodeById(id), HttpStatus.OK);
     }
+
     @GetMapping(value = "/code/latest")
     public ResponseEntity<?> getLatestCodeApi() {
         return new ResponseEntity<>(codeService.latest10(), HttpStatus.OK);
