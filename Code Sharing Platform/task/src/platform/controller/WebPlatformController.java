@@ -3,7 +3,9 @@ package platform.controller;
 import freemarker.template.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 import platform.Code;
@@ -37,11 +39,10 @@ public class WebPlatformController implements TemplateModel {
     }
 
     @GetMapping(value = "/code/latest")
-    public ModelAndView getLatestCode(HttpServletResponse response) {
-        response.addHeader("Content-Type", "text/html");
-        ModelAndView latest = new ModelAndView("latest");
-        latest.addObject(codeService.latest10());
-        return latest;
+    public ModelAndView getLatestCode(@ModelAttribute("model") ModelMap model) {
+        ModelAndView codeList = new ModelAndView("latest");
+        codeList.addObject(codeService.latest10());
+        return codeList;
     }
 
 }

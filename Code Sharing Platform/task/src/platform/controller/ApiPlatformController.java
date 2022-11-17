@@ -6,9 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import platform.Code;
 import platform.CodeService;
+import platform.CodeUserRepresentation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import static platform.Mapper.map;
 
 @RestController
 @RequestMapping("/api")
@@ -37,14 +42,24 @@ public class ApiPlatformController {
     @GetMapping(value = "/code/{id}")
     public ResponseEntity<?> getCodeByIdApi(@PathVariable UUID id) {
         Code codeNew = codeService.getCodeById(id);
+        if (codeNew == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         codeNew.updateRestriction();
         codeService.saveCode(codeNew);
         codeService.deleteCodeRestriction();
-        return new ResponseEntity<>(codeService.getCodeById(id), HttpStatus.OK);
+
+
+        return new ResponseEntity<>(map(codeNew), HttpStatus.OK);
     }
 
     @GetMapping(value = "/code/latest")
     public ResponseEntity<?> getLatestCodeApi() {
-        return new ResponseEntity<>(codeService.latest10(), HttpStatus.OK);
+        List<CodeUserRepresentation> codeList = new ArrayList<>();
+        for (Code code:
+                codeService.latest10()) {
+            codeList.add(map(code));
+        }
+        return new ResponseEntity<>(codeList, HttpStatus.OK);
     }
 }

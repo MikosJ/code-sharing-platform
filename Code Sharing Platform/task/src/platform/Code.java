@@ -12,8 +12,10 @@ import java.util.UUID;
 
 @Entity
 public class Code {
+
     @JsonProperty("code")
     private String code;
+
     @JsonProperty("date")
     private LocalDateTime date;
     @Id
@@ -25,8 +27,10 @@ public class Code {
     @JsonIgnore
     @JsonProperty("isViewRestricted")
     private boolean isViewRestricted;
+    @JsonIgnore
     @JsonProperty("view")
     private int viewRestriction;
+    @JsonIgnore
     @JsonProperty("time")
     private long timeRestriction;
     @JsonIgnore
@@ -53,7 +57,10 @@ public class Code {
     }
 
     public String getDate() {
-        return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSSSSS"));
+    }
+    public LocalDateTime getDateLDT() {
+        return date;
     }
 
     public void setDate(LocalDateTime date) {
@@ -101,6 +108,7 @@ public class Code {
         long secondsDiff = Math.abs(ChronoUnit.SECONDS.between(this.date, LocalDateTime.now()));
         if (this.isTimeRestricted || this.isViewRestricted) {
             this.timeRestriction = Math.max(0L, this.timeRestriction - secondsDiff);
+            System.out.println(this.timeRestriction);
             --this.viewRestriction;
             if (this.timeRestriction == 0L && this.isTimeRestricted) {
                 this.toBeDeleted = true;
