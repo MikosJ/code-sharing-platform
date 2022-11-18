@@ -19,14 +19,14 @@ public interface CodeRepository extends CrudRepository<Code, Long> {
 
     //List<Code> findFirst10ByTimeRestrictedIsFalseAndViewRestrictedIsFalseOrderByDateDesc();
     @Query(value = "SELECT * FROM CODE WHERE IS_TIME_RESTRICTED IS FALSE AND IS_VIEW_RESTRICTED IS FALSE ORDER BY DATE DESC LIMIT 10", nativeQuery = true)
-    List<Code> test();
+    List<Code> notRestricted();
 
 
     @Modifying
     @Transactional
     void deleteByToBeDeletedIsTrue();
 
-
-
-
+   @Modifying
+   @Transactional
+    void deleteById(UUID id);
 }

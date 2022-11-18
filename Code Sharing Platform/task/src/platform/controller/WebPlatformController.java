@@ -24,17 +24,28 @@ public class WebPlatformController implements TemplateModel {
         response.addHeader("Content-Type", "text/html");
         ModelAndView model = new ModelAndView("codeSingle");
         Code code = codeService.getCodeById(id);
-        code.updateRestriction();
-        codeService.saveCode(code);
-        codeService.deleteCodeRestriction();
+        System.out.println(code.toString());
         model.addObject("codeBody", code.getCode());
         model.addObject("date", code.getDate());
+        model.addObject("time_restriction", code.isTimeRestricted());
+        model.addObject("views_restriction", code.isViewRestricted());
+        model.addObject("time", code.getTimeRestriction());
+        code.updateRestriction();
+        codeService.saveCode(code);
+        model.addObject("views", code.getViewRestriction());
+        System.out.println(code.toString());
+
+        codeService.deleteCodeRestriction();
+        if (code.isToBeDeleted()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
         return model;
     }
 
     @GetMapping(value = "/code/new")
     public ModelAndView newCode(HttpServletResponse response) {
         response.addHeader("Content-Type", "text/html");
+        codeService.deleteCodeRestriction();
         return new ModelAndView("submitForm");
     }
 
@@ -42,6 +53,7 @@ public class WebPlatformController implements TemplateModel {
     public ModelAndView getLatestCode(@ModelAttribute("model") ModelMap model) {
         ModelAndView codeList = new ModelAndView("latest");
         codeList.addObject(codeService.latest10());
+        codeService.deleteCodeRestriction();
         return codeList;
     }
 

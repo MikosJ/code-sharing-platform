@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Entity
@@ -27,12 +27,12 @@ public class Code {
     @JsonIgnore
     @JsonProperty("isViewRestricted")
     private boolean isViewRestricted;
-    @JsonIgnore
-    @JsonProperty("view")
-    private int viewRestriction;
-    @JsonIgnore
     @JsonProperty("time")
     private long timeRestriction;
+
+    @JsonProperty("views")
+    private int viewRestriction;
+
     @JsonIgnore
     @JsonProperty("toBeDeleted")
     private boolean toBeDeleted;
@@ -56,9 +56,12 @@ public class Code {
         this.code = code;
     }
 
+    @JsonProperty("date")
     public String getDate() {
         return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSSSSS"));
     }
+
+    @JsonIgnore
     public LocalDateTime getDateLDT() {
         return date;
     }
@@ -88,10 +91,12 @@ public class Code {
         this.isViewRestricted = viewRestricted;
     }
 
+    @JsonIgnore
     public boolean isTimeRestricted() {
         return isTimeRestricted;
     }
 
+    @JsonIgnore
     public boolean isViewRestricted() {
         return isViewRestricted;
     }
@@ -104,22 +109,47 @@ public class Code {
         return viewRestriction;
     }
 
-    public Code updateRestriction() {
-        long secondsDiff = Math.abs(ChronoUnit.SECONDS.between(this.date, LocalDateTime.now()));
+    @JsonIgnore
+    public boolean isToBeDeleted() {
+        return toBeDeleted;
+    }
+
+    public void updateRestriction() {
+        long secondsDiff = Duration.between(this.getDateLDT(), LocalDateTime.now()).toSeconds();
+
         if (this.isTimeRestricted || this.isViewRestricted) {
-            this.timeRestriction = Math.max(0L, this.timeRestriction - secondsDiff);
-            System.out.println(this.timeRestriction);
+            this.timeRestriction -= secondsDiff;
             --this.viewRestriction;
-            if (this.timeRestriction == 0L && this.isTimeRestricted) {
+
+            if (this.timeRestriction <= 0 && this.isTimeRestricted) {
                 this.toBeDeleted = true;
             }
-            if (this.viewRestriction < 0L && this.isViewRestricted) {
+
+            if (this.viewRestriction <= 0L && this.isViewRestricted) {
                 this.toBeDeleted = true;
             }
+
             if (this.viewRestriction < 0) {
                 this.viewRestriction = 0;
             }
+            if(!this.isTimeRestricted && this.timeRestriction <0) {
+                this.timeRestriction = 0;
+            }
+
         }
-        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Code{" +
+                "code='" + code + '\'' +
+                ", date=" + date +
+                ", id=" + id +
+                ", isTimeRestricted=" + isTimeRestricted +
+                ", isViewRestricted=" + isViewRestricted +
+                ", timeRestriction=" + timeRestriction +
+                ", viewRestriction=" + viewRestriction +
+                ", toBeDeleted=" + toBeDeleted +
+                '}';
     }
 }

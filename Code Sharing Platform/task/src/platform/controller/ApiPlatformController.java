@@ -6,14 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import platform.Code;
 import platform.CodeService;
-import platform.CodeUserRepresentation;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static platform.Mapper.map;
 
 @RestController
 @RequestMapping("/api")
@@ -30,36 +25,32 @@ public class ApiPlatformController {
             codeNew.setTimeRestricted(true);
             codeNew.setTimeRestriction(code.getTimeRestriction());
         }
-        if (code.getViewRestriction()>0) {
+        if (code.getViewRestriction() > 0) {
             codeNew.setViewRestricted(true);
             codeNew.setViewRestriction(code.getViewRestriction());
         }
         codeService.saveCode(codeNew);
-        System.out.println(codeNew);
+        //codeService.deleteCodeRestriction();
         return new ResponseEntity<>(Map.of("id", String.valueOf(codeNew.getId())), HttpStatus.OK);
     }
 
     @GetMapping(value = "/code/{id}")
     public ResponseEntity<?> getCodeByIdApi(@PathVariable UUID id) {
         Code codeNew = codeService.getCodeById(id);
-        if (codeNew == null) {
+        codeNew.updateRestriction();
+        if (codeNew.isToBeDeleted()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        codeNew.updateRestriction();
         codeService.saveCode(codeNew);
         codeService.deleteCodeRestriction();
 
-
-        return new ResponseEntity<>(map(codeNew), HttpStatus.OK);
+        return new ResponseEntity<>(codeNew, HttpStatus.OK);
     }
 
     @GetMapping(value = "/code/latest")
     public ResponseEntity<?> getLatestCodeApi() {
-        List<CodeUserRepresentation> codeList = new ArrayList<>();
-        for (Code code:
-                codeService.latest10()) {
-            codeList.add(map(code));
-        }
-        return new ResponseEntity<>(codeList, HttpStatus.OK);
+
+        codeService.deleteCodeRestriction();
+        return new ResponseEntity<>(codeService.latest10(), HttpStatus.OK);
     }
 }

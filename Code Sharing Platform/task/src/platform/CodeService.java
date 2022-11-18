@@ -16,7 +16,7 @@ public class CodeService {
     }
 
     public List<Code> latest10() {
-        return codeRepository.test();
+        return codeRepository.notRestricted();
     }
 
     public void saveCode(Code code) {
@@ -24,5 +24,8 @@ public class CodeService {
     }
     public void deleteCodeRestriction() {
         codeRepository.deleteByToBeDeletedIsTrue();
+    }
+    public void deleteByID(UUID id) {
+        codeRepository.deleteById(id);
     }
 }
