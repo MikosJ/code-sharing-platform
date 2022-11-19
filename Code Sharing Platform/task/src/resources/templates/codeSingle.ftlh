@@ -12,11 +12,16 @@
 <body>
 <pre id="code_snippet"><code>${codeBody}</code></pre>
 <span id="load_date">${date}</span>
+
 <#if time_restriction == true>
-    <span id="time_restriction">${time}</span>
+    <#if (time>0)>
+        <span id="time_restriction">${time}</span>
+    </#if>
 </#if>
 <#if views_restriction == true>
-    <span id="views_restriction">${views}</span>
+    <#if (views>0)>
+        <span id="views_restriction">${views}</span>
+    </#if>
 </#if>
 </body>
 </html>

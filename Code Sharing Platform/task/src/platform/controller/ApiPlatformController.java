@@ -1,6 +1,5 @@
 package platform.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,23 +13,17 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class ApiPlatformController {
 
-    @Autowired
-    CodeService codeService;
+    private final CodeService codeService;
+
+    public ApiPlatformController(CodeService codeService) {
+        this.codeService = codeService;
+    }
 
 
     @PostMapping("/code/new")
     public ResponseEntity<?> newCodeApi(@RequestBody Code code) {
-        Code codeNew = new Code(code.getCode());
-        if (code.getTimeRestriction() > 0) {
-            codeNew.setTimeRestricted(true);
-            codeNew.setTimeRestriction(code.getTimeRestriction());
-        }
-        if (code.getViewRestriction() > 0) {
-            codeNew.setViewRestricted(true);
-            codeNew.setViewRestriction(code.getViewRestriction());
-        }
+        Code codeNew = new Code(code.getCode(), code.getTimeRestriction(), code.getViewRestriction());
         codeService.saveCode(codeNew);
-        //codeService.deleteCodeRestriction();
         return new ResponseEntity<>(Map.of("id", String.valueOf(codeNew.getId())), HttpStatus.OK);
     }
 

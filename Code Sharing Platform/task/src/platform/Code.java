@@ -28,14 +28,17 @@ public class Code {
     @JsonProperty("isViewRestricted")
     private boolean isViewRestricted;
     @JsonProperty("time")
-    private long timeRestriction;
+    private Long timeRestriction;
 
     @JsonProperty("views")
-    private int viewRestriction;
+    private Integer viewRestriction;
 
     @JsonIgnore
     @JsonProperty("toBeDeleted")
     private boolean toBeDeleted;
+
+    @JsonIgnore
+    private LocalDateTime modified;
 
 
     public Code() {
@@ -47,6 +50,27 @@ public class Code {
         this.code = code;
         this.date = LocalDateTime.now();
     }
+    public Code(String code, Long time, Integer views) {
+        if (time == null || time == 0L) {
+            this.timeRestriction = 0L;
+            this.isTimeRestricted = false;
+        } else {
+            this.timeRestriction = time;
+            this.isTimeRestricted = true;
+        }
+        if (views == null || views == 0) {
+            this.viewRestriction = 0;
+            this.isViewRestricted = false;
+        } else {
+            this.viewRestriction = views;
+            this.isViewRestricted = true;
+        }
+        this.id = UUID.randomUUID();
+        this.code = code;
+        this.date = LocalDateTime.now();
+        this.modified = LocalDateTime.now();
+    }
+
 
     public String getCode() {
         return code;
@@ -115,26 +139,32 @@ public class Code {
     }
 
     public void updateRestriction() {
-        long secondsDiff = Duration.between(this.getDateLDT(), LocalDateTime.now()).toSeconds();
+        long secondsDiff = Duration.between(modified, LocalDateTime.now()).toSeconds();
 
         if (this.isTimeRestricted || this.isViewRestricted) {
-            this.timeRestriction -= secondsDiff;
-            --this.viewRestriction;
-
-            if (this.timeRestriction <= 0 && this.isTimeRestricted) {
-                this.toBeDeleted = true;
-            }
-
-            if (this.viewRestriction <= 0L && this.isViewRestricted) {
-                this.toBeDeleted = true;
+            this.timeRestriction-=secondsDiff;
+            this.modified = LocalDateTime.now();
+            if (this.isViewRestricted) {
+                --this.viewRestriction;
             }
 
             if (this.viewRestriction < 0) {
                 this.viewRestriction = 0;
             }
-            if(!this.isTimeRestricted && this.timeRestriction <0) {
-                this.timeRestriction = 0;
+
+            if(this.timeRestriction <0L) {
+                this.timeRestriction = 0L;
             }
+
+            if (this.timeRestriction == 0L && this.isTimeRestricted) {
+                this.toBeDeleted = true;
+            }
+
+            if (this.viewRestriction == 0 && this.isViewRestricted) {
+                this.toBeDeleted = true;
+            }
+
+
 
         }
     }
