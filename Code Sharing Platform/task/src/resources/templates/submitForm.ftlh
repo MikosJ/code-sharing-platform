@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <title>Create</title>
     <script type="text/javascript" th:src="@{/send.js}"></script>
+    <link rel="stylesheet" href="newCode.css">
 </head>
 <body>
-<textarea id="code_snippet">Paste your code snippet here</textarea>
-<p>Time restriction: </p><input id="time_restriction" type="text"/>
-<p>View restriction: </p><input id="views_restriction" type="text"/>
-<button id="send_snippet" type="submit" onclick="send()">Submit</button>
+<div class="snippet_sending">
+    <textarea id="code_snippet">Paste your code snippet here</textarea>
+    <label for="time_restriction" class="time_restriction">Time restriction: </label><input id="time_restriction" type="text"/>
+    <label for="views_restriction" class="view_restriction">View restriction: </label><input id="views_restriction" type="text"/>
+    <button id="send_snippet" type="submit" onclick="send()">Submit</button>
+</div>
 </body>
 <script>
     function send() {

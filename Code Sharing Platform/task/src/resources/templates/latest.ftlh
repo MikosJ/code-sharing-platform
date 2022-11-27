@@ -10,7 +10,7 @@
     <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-<#list codeList as cl>
+<#list latest10 as cl>
     <pre id="code_snippet" class="test"><code>${cl.code}</code></pre>
     <span id="load_date">${cl.date}</span>
 </#list>

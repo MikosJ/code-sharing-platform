@@ -4,14 +4,12 @@ import freemarker.template.TemplateModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
 import platform.model.Code;
 import platform.service.CodeService;
+
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -55,24 +53,23 @@ public class WebPlatformController implements TemplateModel {
     }
 
     @GetMapping(value = "/code/new")
-    public ModelAndView newCode(HttpServletResponse response) {
+    public String newCode(HttpServletResponse response) {
 
         response.addHeader("Content-Type", "text/html");
 
-        codeService.deleteCodeRestriction();
-
-        return new ModelAndView("submitForm");
+        return "submitForm";
     }
 
     @GetMapping(value = "/code/latest")
-    public ModelAndView getLatestCode(@ModelAttribute("model") ModelMap model) {
-
-        ModelAndView codeList = new ModelAndView("latest");
-
-        codeList.addObject(codeService.latest10());
-        codeService.deleteCodeRestriction();
-
-        return codeList;
+    public String getLatestCode(Model model, HttpServletResponse response){
+        if (codeService.latest10().size() == 0) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Codes available to be seen were not found");
+        } else {
+            model.addAttribute("latest10", codeService.latest10());
+            codeService.deleteCodeRestriction();
+            return "latest";
+        }
     }
 
 }
