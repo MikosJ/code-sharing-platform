@@ -1,16 +1,20 @@
-package platform;
+package platform.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.*;
+import org.hibernate.Hibernate;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 public class Code {
 
     @JsonProperty("code")
@@ -50,15 +54,16 @@ public class Code {
         this.code = code;
         this.date = LocalDateTime.now();
     }
+
     public Code(String code, Long time, Integer views) {
-        if (time == null || time == 0L) {
+        if (time == null || time <= 0L) {
             this.timeRestriction = 0L;
             this.isTimeRestricted = false;
         } else {
             this.timeRestriction = time;
             this.isTimeRestricted = true;
         }
-        if (views == null || views == 0) {
+        if (views == null || views <= 0) {
             this.viewRestriction = 0;
             this.isViewRestricted = false;
         } else {
@@ -90,29 +95,9 @@ public class Code {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
 
     public UUID getId() {
         return id;
-    }
-
-    public void setTimeRestriction(long timeRestriction) {
-        this.timeRestriction = timeRestriction;
-    }
-
-    public void setViewRestriction(int viewRestriction) {
-        this.viewRestriction = viewRestriction;
-    }
-
-    public void setTimeRestricted(boolean timeRestricted) {
-        this.isTimeRestricted = timeRestricted;
-    }
-
-    public void setViewRestricted(boolean viewRestricted) {
-        this.isViewRestricted = viewRestricted;
     }
 
     @JsonIgnore
@@ -142,7 +127,7 @@ public class Code {
         long secondsDiff = Duration.between(modified, LocalDateTime.now()).toSeconds();
 
         if (this.isTimeRestricted || this.isViewRestricted) {
-            this.timeRestriction-=secondsDiff;
+            this.timeRestriction -= secondsDiff;
             this.modified = LocalDateTime.now();
             if (this.isViewRestricted) {
                 --this.viewRestriction;
@@ -152,7 +137,7 @@ public class Code {
                 this.viewRestriction = 0;
             }
 
-            if(this.timeRestriction <0L) {
+            if (this.timeRestriction < 0L) {
                 this.timeRestriction = 0L;
             }
 
@@ -165,21 +150,24 @@ public class Code {
             }
 
 
-
         }
     }
 
     @Override
     public String toString() {
-        return "Code{" +
-                "code='" + code + '\'' +
-                ", date=" + date +
-                ", id=" + id +
-                ", isTimeRestricted=" + isTimeRestricted +
-                ", isViewRestricted=" + isViewRestricted +
-                ", timeRestriction=" + timeRestriction +
-                ", viewRestriction=" + viewRestriction +
-                ", toBeDeleted=" + toBeDeleted +
-                '}';
+        return "Code{" + "code='" + code + '\'' + ", date=" + date + ", id=" + id + ", isTimeRestricted=" + isTimeRestricted + ", isViewRestricted=" + isViewRestricted + ", timeRestriction=" + timeRestriction + ", viewRestriction=" + viewRestriction + ", toBeDeleted=" + toBeDeleted + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Code code = (Code) o;
+        return id != null && Objects.equals(id, code.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
