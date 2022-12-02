@@ -1,4 +1,4 @@
-.code_snippet {
+.code_list {
     border: 2px dotted Black;
     background-color: #D3D3D3;
 }
@@ -9,7 +9,4 @@
 
 .span {
     color: pink;
-}
-body{
-    font-family: sans-serif;
 }

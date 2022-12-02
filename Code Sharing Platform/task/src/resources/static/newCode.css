@@ -1,0 +1,45 @@
+body {
+    background-color: #f9e8ff;
+    font-family: sans-serif;
+}
+
+textarea {
+    font-family: sans-serif;
+    width: 100vw;
+    height: 30vh;
+    margin: 20px;
+}
+
+#code_input {
+    display: flex;
+}
+
+.time_restriction {
+    margin: 10px;
+    justify-content: center;
+    align-content: center;
+}
+
+.view_restriction {
+    margin: 10px;
+    justify-content: center;
+    align-content: center;
+
+}
+.snippet_sending {
+    margin: 30px;
+    display:flex;
+    justify-content: center;
+}
+#button_center {
+    width: 100vw;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+}
+#send_snippet {
+    width: 100px;
+    height: 40px;
+    justify-content: center;
+    align-content: center;
+}

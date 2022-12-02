@@ -3,35 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Create</title>
-    <script type="text/javascript" th:src="@{/send.js}"></script>
-    <link rel="stylesheet" href="newCode.css">
+    <script type="text/javascript" src="/send.js"></script>
+    <link type="text/css" href="/newCode.css" rel="stylesheet">
 </head>
 <body>
-<div class="snippet_sending">
+<div id="code_input">
     <textarea id="code_snippet">Paste your code snippet here</textarea>
+</div>
+
+<div class="snippet_sending">
+    <br>
     <label for="time_restriction" class="time_restriction">Time restriction: </label><input id="time_restriction" type="text"/>
     <label for="views_restriction" class="view_restriction">View restriction: </label><input id="views_restriction" type="text"/>
+</div>
+<div id="button_center">
     <button id="send_snippet" type="submit" onclick="send()">Submit</button>
 </div>
 </body>
-<script>
-    function send() {
-        let object = {
-            "code": document.getElementById("code_snippet").value,
-            "time": document.getElementById("time_restriction").value,
-            "views": document.getElementById("views_restriction").value
-        };
 
-        let json = JSON.stringify(object);
-
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", '/api/code/new', false)
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        xhr.send(json);
-
-        if (xhr.status === 200) {
-            alert("Success!");
-        }
-    }
-</script>
 </html>

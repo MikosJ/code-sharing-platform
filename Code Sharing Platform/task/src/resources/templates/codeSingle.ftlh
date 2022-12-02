@@ -7,21 +7,25 @@
         href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
   <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="/latest.css">
 </head>
 <body>
-<pre id="code_snippet"><code>${codeBody}</code></pre>
-<span id="load_date">${date}</span>
-<br>
-<#if time_restriction == true>
-    <#if (time>=0)>
-        <span id="time_restriction">Time restriction: ${time}</span>
+<h2>Single code for given UUID</h2>
+
+<div class="code_block" id="block_background">
+    <label for="code_snippet">Code snippet: </label><pre id="code_snippet"><code>${codeBody}</code></pre>
+    <label for="load_date">Date of publication: </label><p id="load_date">${date}</p>
+    <#if time_restriction == true>
+        <#if (time>=0)>
+            <span id="time_restriction">Time restriction: ${time}</span>
+        </#if>
     </#if>
-</#if>
-<br>
-<#if views_restriction == true>
-    <#if (views>=0)>
-        <span id="views_restriction">View restriction: ${views}</span>
+    <br>
+    <#if views_restriction == true>
+        <#if (views>=0)>
+            <span id="views_restriction">View restriction: ${views}</span>
+        </#if>
     </#if>
-</#if>
+</div>
 </body>
 </html>

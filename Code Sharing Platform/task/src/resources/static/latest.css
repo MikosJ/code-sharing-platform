@@ -1,0 +1,26 @@
+h2 {
+    display: block;
+}
+body {
+    background-color: #f9e8ff;
+    font-family: sans-serif;
+}
+.code_list {
+    border: 2px black solid;
+    background-color: #c0c8ff;
+}
+
+#load_date {
+    color: #28102c;
+}
+#code_snippet {
+    justify-content: center;
+    align-content: center;
+}
+.code_block {
+    display: block;
+    border: black dotted 2px;
+}
+#block_background{
+    background-color: #c0c8ff;
+}
