@@ -13,8 +13,8 @@
 
 <div class="snippet_sending">
     <br>
-    <label for="time_restriction" class="time_restriction">Time restriction: </label><input id="time_restriction" type="text"/>
-    <label for="views_restriction" class="view_restriction">View restriction: </label><input id="views_restriction" type="text"/>
+    <label for="time_restriction" class="time_restriction">Time restriction: </label><input id="time_restriction" type="text" value="0"/>
+    <label for="views_restriction" class="view_restriction">View restriction: </label><input id="views_restriction" type="text" value="0"/>
 </div>
 <div id="button_center">
     <button id="send_snippet" type="submit" onclick="send()">Submit</button>
